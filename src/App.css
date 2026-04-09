@@ -1,0 +1,10 @@
+button{display:block;
+  margin:10px;
+  padding:10px;
+  font-size:16px;
+}
+
+.selected{
+  background-color:blue;
+  color:white;
+}
