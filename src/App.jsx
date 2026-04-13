@@ -1,5 +1,7 @@
 import './App.css'
-import { useState } from "react"
+import { useState } from "react";
+import ResultScreen from './ResultScreen';
+import StartScreen from './StartScreen';
 
 const questions =[{
   id:1,
@@ -39,43 +41,80 @@ const questions =[{
 
 function App() {
 
-  const [currentquestion,setcurrentquestion] = useState(0);
-  const[selectedanswer, setselectedanswer] = useState(null);
+  const [currentQuestion,setCurrentQuestion] = useState(0);
+  const[selectedAnswer, setSelectedAnswer] = useState(null);
   const [userAnswers, setUserAnswers] = useState([]);
-  const [quizfinished,setquizfinshed] = useState(false);
-  console.log(userAnswers);
+  const [quizFinished,setQuizFinished] = useState(false);
+  const [quizStarted, setQuizStarted] = useState(false);
+ 
+  const[score,setScore] = useState(0);
+  
   return (
     
     <div >
       <h1>DevQuiz</h1>
-      <h2>{questions[currentquestion].question}</h2>
+
+
+      {/*Quiz Finished*/} 
+
+{
+  !quizStarted?(<StartScreen onStart={() => setQuizStarted(true)} />):
+
+
+quizFinished ? (
+  <ResultScreen score={score} 
+  totalQuestions={questions.length} onRestart={() => {
+      setCurrentQuestion(0);
+      setSelectedAnswer(null); 
+      setQuizFinished(false); 
+      setScore(0); 
+      setUserAnswers([])
+      setQuizStarted(false);}}>
+  </ResultScreen>
+):(
+<div>
+
+      <h2>{questions[currentQuestion].question}</h2>
       
-        {questions[currentquestion].options.map((option,index)=><button key={index} onClick={() =>
-           setselectedanswer(option)}
-           className={selectedanswer===option ? "selected" : ""}>{option}</button>)}
+        {questions[currentQuestion].options.map((option,index)=><button key={index} onClick={() =>
+           setSelectedAnswer(option)}
+           className={selectedAnswer===option ? "selected" : ""}>{option}</button>)}
+
+           {/* next button*/ }
+        <button onClick={() => {
+          setCurrentQuestion(currentQuestion + 1)
+          setSelectedAnswer(null)
+          setUserAnswers([...userAnswers, selectedAnswer])}
+        }
+        disabled={currentQuestion == questions.length - 1}>Next</button>
 {/* submit button*/ }
         
         {
-          currentquestion == questions.length - 1 &&(
-          <button onClick={() =>{ setUserAnswers([...userAnswers, selectedanswer])
-            setquizfinshed(true)}
+          currentQuestion == questions.length - 1 &&(
+          <button onClick={() =>{ 
+           const finalAnswers = [...userAnswers, selectedAnswer]
+            const finalScore= finalAnswers.filter((answer,index) => 
+              answer=== questions[index].correctAnswer
+            ).length
+            setUserAnswers(finalAnswers)
+            setScore(finalScore)
+            setQuizFinished(true)
+            console.log('userAnswers:', finalAnswers);
+            console.log('correctAnswers:', questions.map(q => q.correctAnswer));
+
           }
+          }
+          
         >
           Submit
         </button>)}
+</div>
 
-
-{/* next button*/ }
-        <button onClick={() => {
-          setcurrentquestion(currentquestion + 1)
-          setselectedanswer(null)
-          setUserAnswers([...userAnswers, selectedanswer])}
-        }
-        disabled={currentquestion == questions.length - 1}>Next</button>
+        )}
         
     </div>
   )
-    
-}
+}  
 
-export default App
+
+export default App;
