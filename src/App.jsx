@@ -2,7 +2,7 @@ import './App.css'
 import { useState } from "react";
 import ResultScreen from './ResultScreen';
 import StartScreen from './StartScreen';
-
+import QuestionCard from './QuestionCard';
 const questions =[{
   id:1,
   question:"What does hTMl stand for?",
@@ -51,8 +51,8 @@ function App() {
   
   return (
     
-    <div >
-      <h1>DevQuiz</h1>
+    <div className='container' >
+      
 
 
       {/*Quiz Finished*/} 
@@ -74,11 +74,11 @@ quizFinished ? (
 ):(
 <div>
 
-      <h2>{questions[currentQuestion].question}</h2>
-      
-        {questions[currentQuestion].options.map((option,index)=><button key={index} onClick={() =>
-           setSelectedAnswer(option)}
-           className={selectedAnswer===option ? "selected" : ""}>{option}</button>)}
+      <QuestionCard 
+        question={questions[currentQuestion]}
+        onSelect={setSelectedAnswer}
+        selectedAnswer={selectedAnswer}
+      />
 
            {/* next button*/ }
         <button onClick={() => {
@@ -99,9 +99,7 @@ quizFinished ? (
             setUserAnswers(finalAnswers)
             setScore(finalScore)
             setQuizFinished(true)
-            console.log('userAnswers:', finalAnswers);
-            console.log('correctAnswers:', questions.map(q => q.correctAnswer));
-
+            
           }
           }
           
